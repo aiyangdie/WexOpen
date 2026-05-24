@@ -3,6 +3,8 @@
 所有版本均可在 [Releases 发布页](https://github.com/aiyangdie/WexOpen/releases) 下载。  
 页面顶部是最新版本，**向下滚动**即可看到历史版本列表。
 
+**源码：** 每个 Release 的 Assets 底部有 GitHub 自动生成的 `Source code (zip)`；从 v2.3.1 起还会附带 `WexOpen-vX.X.X-source.zip`。
+
 ---
 
 ## [v2.3.0](https://github.com/aiyangdie/WexOpen/releases/tag/v2.3.0) — 最新
@@ -18,6 +20,7 @@
 - [纯净版 exe](https://github.com/aiyangdie/WexOpen/releases/download/v2.3.0/WexOpen-Portable.exe)
 - [商业版 exe](https://github.com/aiyangdie/WexOpen/releases/download/v2.3.0/WexOpen-Business-Portable.exe)
 - [安装版](https://github.com/aiyangdie/WexOpen/releases/download/v2.3.0/WexOpen-Setup.exe)
+- [源码 zip（GitHub 自动生成）](https://github.com/aiyangdie/WexOpen/archive/refs/tags/v2.3.0.zip)
 
 ---
 

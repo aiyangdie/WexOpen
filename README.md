@@ -53,6 +53,22 @@ GitHub 的 Releases 页面**默认只展开最新版**，历史版本需要往�
 
 也可直接查看 **[CHANGELOG 更新日志](CHANGELOG.md)**，每个版本都有说明和下载直链。
 
+### 源码怎么下载？
+
+每个版本的 Releases 里都有源码，有两种方式：
+
+| 方式 | 说明 |
+|------|------|
+| **GitHub 自动生成** | 在 Assets 最下方有 `Source code (zip)` 和 `Source code (tar.gz)`，每个历史版本都有 |
+| **命名源码包** | 从 **v2.3.1** 起额外提供 `WexOpen-vX.X.X-source.zip`，更方便识别 |
+
+旧版本若没有命名源码包，可用直链下载，例如：
+
+- v2.3.0 源码：https://github.com/aiyangdie/WexOpen/archive/refs/tags/v2.3.0.zip
+- v2.2.0 源码：https://github.com/aiyangdie/WexOpen/archive/refs/tags/v2.2.0.zip
+
+或执行：`git clone https://github.com/aiyangdie/WexOpen.git` 后 `git checkout v2.3.0`
+
 | 版本 | 发布页 |
 |------|--------|
 | **v2.3.0**（当前最新） | [下载](https://github.com/aiyangdie/WexOpen/releases/tag/v2.3.0) |

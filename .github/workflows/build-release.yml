@@ -1,122 +1,78 @@
 name: Build Release
 
-
-
 on:
-
   push:
-
     tags:
-
       - "v*"
-
   workflow_dispatch:
 
-
-
 permissions:
-
   contents: write
 
-
-
 jobs:
-
   build:
-
     runs-on: windows-latest
 
-
-
     steps:
-
       - uses: actions/checkout@v4
-
-
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
-
         with:
-
           python-version: "3.12"
 
-
-
       - name: Install dependencies
-
         run: pip install -r requirements-build.txt
 
-
-
       - name: Generate icon
-
         run: python scripts/generate_icon.py
 
-
+      - name: Package source code
+        shell: bash
+        run: |
+          git archive --format=zip --output "dist/WexOpen-${{ github.ref_name }}-source.zip" HEAD
 
       - name: Build with PyInstaller
-
         run: pyinstaller WexOpen.spec --noconfirm
 
-
-
       - name: Install Inno Setup
-
         run: choco install innosetup -y
 
-
-
       - name: Build installer
-
         run: "& 'C:/Program Files (x86)/Inno Setup 6/ISCC.exe' installer/WexOpen.iss"
 
-
-
       - name: Create portable zips
-
         shell: pwsh
-
         run: |
-
           Compress-Archive -Path dist/WexOpen-Portable.exe -DestinationPath dist/WexOpen-Portable.zip -Force
-
           Compress-Archive -Path dist/WexOpen-Business-Portable.exe -DestinationPath dist/WexOpen-Business-Portable.zip -Force
 
-
-
       - name: Upload Release Assets
-
         uses: softprops/action-gh-release@v2
-
         with:
-
           files: |
-
+            dist/WexOpen-${{ github.ref_name }}-source.zip
             dist/WexOpen-Portable.exe
-
             dist/WexOpen-Portable.zip
-
             dist/WexOpen-Business-Portable.exe
-
             dist/WexOpen-Business-Portable.zip
-
             dist/installer/WexOpen-Setup.exe
-
           body: |
-            ## 下载
+            ## 程序下载
 
             **纯净版：** WexOpen-Portable.exe · WexOpen-Portable.zip · WexOpen-Setup.exe
 
             **商业版：** WexOpen-Business-Portable.exe · WexOpen-Business-Portable.zip
 
+            ## 源码下载
+
+            - **WexOpen-${{ github.ref_name }}-source.zip** — 该版本完整 Python 源码（推荐）
+            - **Source code (zip)** / **Source code (tar.gz)** — GitHub 自动生成的源码快照（在 Assets 最下方）
+
             ---
 
-            [查看全部历史版本](https://github.com/aiyangdie/WexOpen/releases)（页面向下滚动）
-
-            [CHANGELOG 更新日志](https://github.com/aiyangdie/WexOpen/blob/main/CHANGELOG.md)
+            [全部历史版本](https://github.com/aiyangdie/WexOpen/releases) · [CHANGELOG](https://github.com/aiyangdie/WexOpen/blob/main/CHANGELOG.md)
           generate_release_notes: true
-
         env:
-
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
