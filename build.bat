@@ -29,7 +29,8 @@ if errorlevel 1 (
     pause & exit /b 1
 )
 
-echo       免安装版: dist\WexOpen-Portable.exe
+echo       纯净版:   dist\WexOpen-Portable.exe
+echo       商业版:   dist\WexOpen-Business-Portable.exe
 
 echo [4/4] 构建安装程序…
 set "ISCC="

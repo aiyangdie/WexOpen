@@ -1,7 +1,7 @@
 ; WexOpen 安装程序 — Inno Setup 脚本
 
 #define MyAppName "WexOpen"
-#define MyAppVersion "2.0.1"
+#define MyAppVersion "2.2.0"
 #define MyAppPublisher "aiyangdie"
 #define MyAppURL "https://github.com/aiyangdie/WexOpen"
 #define MyAppExeName "WexOpen.exe"
@@ -26,7 +26,7 @@ WizardStyle=modern
 PrivilegesRequired=lowest
 ArchitecturesInstallIn64BitMode=x64compatible
 UninstallDisplayIcon={app}\{#MyAppExeName}
-VersionInfoVersion=2.0.1.0
+VersionInfoVersion=2.2.0.0
 VersionInfoCompany={#MyAppPublisher}
 VersionInfoDescription=微信多开助手
 VersionInfoProductName={#MyAppName}

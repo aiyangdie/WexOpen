@@ -16,15 +16,25 @@
 
 ## 下载（推荐）
 
-前往 **[Releases 发布页](https://github.com/aiyangdie/WexOpen/releases/latest)** 下载 v2.0：
+前往 **[Releases 发布页](https://github.com/aiyangdie/WexOpen/releases/latest)** 下载：
 
-| 版本 | 文件 | 说明 |
-|------|------|------|
-| **免安装版** | `WexOpen-Portable.exe` | 单个 exe，双击即用，可放 U 盘 |
-| **免安装压缩包** | `WexOpen-Portable.zip` | 同上，zip 格式 |
-| **安装版** | `WexOpen-Setup.exe` | 标准安装向导，自动创建桌面快捷方式 |
+### 纯净版（推荐个人使用）
 
-> 普通用户直接下载 **免安装版 exe**，双击就能用。
+| 文件 | 说明 |
+|------|------|
+| `WexOpen-Portable.exe` | 免安装，无广告，双击即用 |
+| `WexOpen-Portable.zip` | 同上，zip 格式 |
+| `WexOpen-Setup.exe` | 安装版，自动创建桌面快捷方式 |
+
+### 商业版（接广告 / 商务合作）
+
+| 文件 | 说明 |
+|------|------|
+| `WexOpen-Business-Portable.exe` | 含商务合作广告位，免安装 |
+| `WexOpen-Business-Portable.zip` | 同上，zip 格式 |
+
+> 开发者：**aiyangdie** · 开源地址：[github.com/aiyangdie/WexOpen](https://github.com/aiyangdie/WexOpen)  
+> 本软件仅供学习参考，商业合作联系：aike1015@qq.com
 
 ---
 
