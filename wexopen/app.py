@@ -1,4 +1,4 @@
-"""WexOpen 主界面 — 纯净版 / 商业版。"""
+"""WexOpen 主界面 v2.3 — 极简 UI 重设计。"""
 
 from __future__ import annotations
 
@@ -15,25 +15,10 @@ from wexopen import __version__
 from wexopen.about import AboutDialog
 from wexopen.finder import WeChatLocation, find_wechat
 from wexopen.launcher import LaunchError, MAX_INSTANCES, MIN_INSTANCES, launch_instances
-from wexopen.meta import AUTHOR, AUTHOR_EMAIL, DISCLAIMER, GITHUB_URL
+from wexopen.meta import AUTHOR, AUTHOR_EMAIL, GITHUB_URL
+from wexopen.theme import C, WIN_H_BIZ, WIN_H_PURE, WIN_W, font, ghost_btn, primary_btn
 
-# ── 配色 ──
-GREEN = "#07C160"
-GREEN_HOVER = "#06AD56"
-GREEN_BG = "#E8F8EF"
-BG = "#F4F5F7"
-WHITE = "#FFFFFF"
-TEXT = "#1A1A1A"
-SUB = "#666666"
-MUTED = "#999999"
-BORDER = "#E8E8E8"
-RED = "#FA5151"
-RED_BG = "#FFF0F0"
-GOLD = "#D4A017"
-GOLD_BG = "#FFF8E7"
-GOLD_BORDER = "#F0D78C"
-
-FONT = "Microsoft YaHei UI"
+QUICK_PRESETS = ((2, "双开"), (3, "三开"), (4, "四开"), (5, "五开"))
 
 
 def _asset_path(name: str) -> Path:
@@ -55,11 +40,13 @@ def _enable_win_dpi() -> None:
             pass
 
 
-class WexOpenApp(ctk.CTk):
-    WIDTH = 380
-    HEIGHT_PURE = 580
-    HEIGHT_BUSINESS = 660
+def _short_path(path: str, max_len: int = 42) -> str:
+    if len(path) <= max_len:
+        return path
+    return "..." + path[-(max_len - 3) :]
 
+
+class WexOpenApp(ctk.CTk):
     def __init__(self, *, business: bool = False) -> None:
         _enable_win_dpi()
         super().__init__()
@@ -67,67 +54,34 @@ class WexOpenApp(ctk.CTk):
         self._business = business
         self._location: WeChatLocation | None = None
         self._busy = False
-        self._fonts: dict[str, ctk.CTkFont] = {}
-        self._footer_default = ""
+        self._chip_btns: dict[int, ctk.CTkButton] = {}
+        self._active_chip: int | None = 2
 
         ctk.set_appearance_mode("light")
-        ctk.set_default_color_theme("green")
         ctk.set_widget_scaling(1.0)
         ctk.set_window_scaling(1.0)
 
-        suffix = "商业版" if business else "纯净版"
-        self.title(f"WexOpen 微信多开 · {suffix}")
-        self._height = self.HEIGHT_BUSINESS if business else self.HEIGHT_PURE
-        self.geometry(f"{self.WIDTH}x{self._height}")
-        self.minsize(self.WIDTH, self._height)
+        tag = "商业" if business else "纯净"
+        self.title(f"WexOpen · {tag}")
+        self._height = WIN_H_BIZ if business else WIN_H_PURE
+        self.geometry(f"{WIN_W}x{self._height}")
+        self.minsize(WIN_W, self._height)
         self.resizable(False, False)
-        self.configure(fg_color=BG)
+        self.configure(fg_color=C["bg"])
 
         icon = _asset_path("icon.ico")
         if icon.is_file():
             self.iconbitmap(str(icon))
 
-        self._register_fonts()
         self._build_ui()
         self._center_window()
         self.after(80, self._detect_wechat)
 
-    def _register_fonts(self) -> None:
-        specs: dict[str, tuple[int, str]] = {
-            "logo": (22, "bold"),
-            "title": (20, "bold"),
-            "subtitle": (12, "normal"),
-            "section": (13, "bold"),
-            "body": (12, "normal"),
-            "small": (11, "normal"),
-            "count": (26, "bold"),
-            "btn_main": (15, "bold"),
-            "btn_quick": (13, "normal"),
-            "btn_small": (12, "normal"),
-            "btn_tiny": (11, "normal"),
-            "minus": (20, "bold"),
-            "biz_title": (13, "bold"),
-        }
-        for key, (size, weight) in specs.items():
-            self._fonts[key] = ctk.CTkFont(family=FONT, size=size, weight=weight)
-
-    def _font(self, key: str) -> ctk.CTkFont:
-        return self._fonts[key]
-
     def _center_window(self) -> None:
         self.update_idletasks()
-        x = (self.winfo_screenwidth() - self.WIDTH) // 2
+        x = (self.winfo_screenwidth() - WIN_W) // 2
         y = (self.winfo_screenheight() - self._height) // 2
-        self.geometry(f"{self.WIDTH}x{self._height}+{x}+{y}")
-
-    def _card(self, parent) -> ctk.CTkFrame:
-        return ctk.CTkFrame(
-            parent,
-            fg_color=WHITE,
-            corner_radius=14,
-            border_width=1,
-            border_color=BORDER,
-        )
+        self.geometry(f"{WIN_W}x{self._height}+{x}+{y}")
 
     def _show_about(self) -> None:
         AboutDialog(self, business=self._business)
@@ -135,221 +89,175 @@ class WexOpenApp(ctk.CTk):
     def _copy_contact(self) -> None:
         self.clipboard_clear()
         self.clipboard_append(AUTHOR_EMAIL)
-        self._set_footer(f"已复制邮箱：{AUTHOR_EMAIL}")
-
-    def _set_footer(self, text: str) -> None:
-        self._footer.configure(text=text)
+        self._hint.configure(text=f"已复制 {AUTHOR_EMAIL}")
 
     def _build_ui(self) -> None:
-        pad = ctk.CTkFrame(self, fg_color=BG, corner_radius=0)
-        pad.pack(fill="both", expand=True, padx=20, pady=20)
+        root = ctk.CTkFrame(self, fg_color=C["bg"], corner_radius=0)
+        root.pack(fill="both", expand=True, padx=24, pady=22)
 
         # ── 顶栏 ──
-        header = ctk.CTkFrame(pad, fg_color=BG, corner_radius=0)
-        header.pack(fill="x", pady=(0, 16))
+        top = ctk.CTkFrame(root, fg_color=C["bg"], corner_radius=0)
+        top.pack(fill="x")
 
-        left = ctk.CTkFrame(header, fg_color=BG, corner_radius=0)
-        left.pack(side="left", fill="x", expand=True)
+        mark = ctk.CTkFrame(top, width=40, height=40, corner_radius=10, fg_color=C["green"])
+        mark.pack(side="left")
+        mark.pack_propagate(False)
+        ctk.CTkLabel(mark, text="W", font=font(18, "bold"), text_color="white").place(
+            relx=0.5, rely=0.5, anchor="center",
+        )
 
-        logo = ctk.CTkFrame(left, width=52, height=52, corner_radius=14, fg_color=GREEN)
-        logo.pack(side="left")
-        logo.pack_propagate(False)
-        ctk.CTkLabel(
-            logo, text="W", font=self._font("logo"), text_color="white",
-        ).place(relx=0.5, rely=0.5, anchor="center")
-
-        title_box = ctk.CTkFrame(left, fg_color=BG, corner_radius=0)
-        title_box.pack(side="left", padx=(14, 0))
-
-        tag = "商业版" if self._business else "纯净版"
-        ctk.CTkLabel(title_box, text="WexOpen", font=self._font("title"), text_color=TEXT, anchor="w").pack(anchor="w")
-        ctk.CTkLabel(title_box, text=f"微信多开助手 · {tag}", font=self._font("subtitle"), text_color=SUB, anchor="w").pack(anchor="w", pady=(2, 0))
-        ctk.CTkLabel(title_box, text="自动识别路径，无需配置", font=self._font("small"), text_color=MUTED, anchor="w").pack(anchor="w", pady=(2, 0))
+        titles = ctk.CTkFrame(top, fg_color=C["bg"], corner_radius=0)
+        titles.pack(side="left", padx=(12, 0), fill="x", expand=True)
+        ctk.CTkLabel(titles, text="WexOpen", font=font(18, "bold"), text_color=C["text"], anchor="w").pack(anchor="w")
+        sub = f"微信多开 · {'商业版' if self._business else '纯净版'}"
+        ctk.CTkLabel(titles, text=sub, font=font(11), text_color=C["text3"], anchor="w").pack(anchor="w")
 
         if self._business:
-            ctk.CTkButton(
-                header,
-                text="关于",
-                width=52,
-                height=30,
-                corner_radius=8,
-                fg_color=WHITE,
-                hover_color=GREEN_BG,
-                text_color=SUB,
-                border_width=1,
-                border_color=BORDER,
-                font=self._font("btn_tiny"),
-                command=self._show_about,
-            ).pack(side="right", padx=(8, 0))
+            ghost_btn(top, "关于", self._show_about, width=44).pack(side="right")
 
-        # ── 微信状态 ──
-        status = self._card(pad)
-        status.pack(fill="x", pady=(0, 12))
+        # ── 主面板（单容器，减少卡片嵌套）──
+        panel = ctk.CTkFrame(root, fg_color=C["surface"], corner_radius=16)
+        panel.pack(fill="x", pady=(20, 0))
 
-        status_top = ctk.CTkFrame(status, fg_color="transparent")
-        status_top.pack(fill="x", padx=16, pady=(14, 8))
+        # 状态行
+        status_row = ctk.CTkFrame(panel, fg_color="transparent")
+        status_row.pack(fill="x", padx=18, pady=(16, 4))
 
-        self._status_dot = ctk.CTkLabel(status_top, text="●", font=self._font("small"), text_color=MUTED, width=16)
+        self._status_dot = ctk.CTkLabel(status_row, text="●", font=font(10), text_color=C["text3"], width=14)
         self._status_dot.pack(side="left")
 
         self._status_label = ctk.CTkLabel(
-            status_top, text="正在检测微信...", font=self._font("section"), text_color=TEXT, anchor="w",
+            status_row, text="检测中", font=font(12, "bold"), text_color=C["text2"], anchor="w",
         )
-        self._status_label.pack(side="left", fill="x", expand=True)
+        self._status_label.pack(side="left")
+
+        ghost_btn(status_row, "刷新", self._detect_wechat, width=40).pack(side="right")
 
         self._path_label = ctk.CTkLabel(
-            status, text="", font=self._font("small"), text_color=MUTED,
-            anchor="w", justify="left", wraplength=300,
+            panel, text="", font=font(10), text_color=C["text3"],
+            anchor="w", wraplength=280, justify="left",
         )
-        self._path_label.pack(fill="x", padx=16, pady=(0, 10))
+        self._path_label.pack(fill="x", padx=18, pady=(0, 14))
 
-        ctk.CTkButton(
-            status, text="重新检测", height=32, width=96, corner_radius=8,
-            fg_color=GREEN_BG, hover_color="#D4F3E3", text_color=GREEN,
-            font=self._font("btn_small"), command=self._detect_wechat,
-        ).pack(pady=(0, 14))
+        # 分隔
+        ctk.CTkFrame(panel, height=1, fg_color=C["line"], corner_radius=0).pack(fill="x", padx=18)
 
-        # ── 数量 ──
-        count_card = self._card(pad)
-        count_card.pack(fill="x", pady=(0, 12))
+        # 数量区
+        ctk.CTkLabel(
+            panel, text="打开数量", font=font(11), text_color=C["text3"],
+        ).pack(pady=(16, 10))
 
-        ctk.CTkLabel(count_card, text="打开数量", font=self._font("section"), text_color=TEXT).pack(anchor="w", padx=16, pady=(14, 12))
+        step = ctk.CTkFrame(panel, fg_color="transparent")
+        step.pack()
 
-        stepper = ctk.CTkFrame(count_card, fg_color="transparent")
-        stepper.pack()
         self._count_var = tk.StringVar(value="2")
 
-        ctk.CTkButton(
-            stepper, text="-", width=46, height=46, corner_radius=10,
-            fg_color=BG, hover_color=BORDER, text_color=TEXT,
-            font=self._font("minus"), command=lambda: self._adjust_count(-1),
-        ).pack(side="left")
+        def _step_btn(sym: str, delta: int) -> ctk.CTkButton:
+            return ctk.CTkButton(
+                step, text=sym, width=40, height=40, corner_radius=20,
+                fg_color=C["bg"], hover_color=C["line"], text_color=C["text"],
+                font=font(18, "bold"),
+                command=lambda: self._adjust_count(delta),
+            )
 
+        _step_btn("-", -1).pack(side="left")
         self._count_entry = ctk.CTkEntry(
-            stepper, width=64, height=46, corner_radius=10,
-            border_width=1, border_color=BORDER, fg_color=WHITE, text_color=TEXT,
-            font=self._font("count"), justify="center", textvariable=self._count_var,
+            step, width=72, height=52, corner_radius=12,
+            border_width=0, fg_color=C["bg"], text_color=C["text"],
+            font=font(32, "bold"), justify="center", textvariable=self._count_var,
         )
-        self._count_entry.pack(side="left", padx=12)
+        self._count_entry.pack(side="left", padx=16)
         self._count_entry.bind("<KeyRelease>", self._on_count_input)
+        _step_btn("+", 1).pack(side="left")
 
-        ctk.CTkButton(
-            stepper, text="+", width=46, height=46, corner_radius=10,
-            fg_color=BG, hover_color=BORDER, text_color=TEXT,
-            font=self._font("minus"), command=lambda: self._adjust_count(1),
-        ).pack(side="left")
+        # 快捷数字芯片
+        chips = ctk.CTkFrame(panel, fg_color="transparent")
+        chips.pack(pady=(14, 18))
+        for n, label in QUICK_PRESETS:
+            btn = ctk.CTkButton(
+                chips, text=label, width=58, height=32, corner_radius=16,
+                fg_color=C["bg"], hover_color=C["green_soft"],
+                text_color=C["text2"], font=font(13, "bold"),
+                command=lambda c=n: self._pick_chip(c),
+            )
+            btn.pack(side="left", padx=4)
+            self._chip_btns[n] = btn
+        self._highlight_chip(2)
 
-        ctk.CTkLabel(
-            count_card, text=f"支持 {MIN_INSTANCES} - {MAX_INSTANCES} 个窗口",
-            font=self._font("small"), text_color=MUTED,
-        ).pack(pady=(10, 14))
+        # 启动
+        self._launch_btn = primary_btn(panel, "启动微信", self._on_launch)
+        self._launch_btn.pack(fill="x", padx=18, pady=(0, 18))
 
-        # ── 快捷 ──
-        quick = ctk.CTkFrame(pad, fg_color=BG, corner_radius=0)
-        quick.pack(fill="x", pady=(0, 12))
-        for i, (n, label) in enumerate(((2, "双开"), (3, "三开"), (4, "四开"), (5, "五开"))):
-            ctk.CTkButton(
-                quick, text=label, height=36, corner_radius=8,
-                fg_color=WHITE, hover_color=GREEN_BG, text_color=GREEN,
-                border_width=1, border_color=BORDER, font=self._font("btn_quick"),
-                command=lambda c=n: self._set_count_and_launch(c),
-            ).pack(side="left", expand=True, fill="x", padx=(0 if i == 0 else 6, 0))
-
-        # ── 商业版：合作广告位 ──
+        # ── 商业合作（商业版）──
         if self._business:
-            self._build_business_card(pad)
+            self._build_biz_strip(root)
 
-        # ── 启动 ──
-        self._launch_btn = ctk.CTkButton(
-            pad, text="启动微信", height=48, corner_radius=10,
-            fg_color=GREEN, hover_color=GREEN_HOVER, text_color="white",
-            font=self._font("btn_main"), command=self._on_launch,
+        # ── 底栏 ──
+        self._hint = ctk.CTkLabel(
+            root, text=f"v{__version__}", font=font(10), text_color=C["text3"],
         )
-        self._launch_btn.pack(fill="x", pady=(4, 0))
-
-        # ── 底部信息 ──
-        bottom = ctk.CTkFrame(pad, fg_color=BG, corner_radius=0)
-        bottom.pack(fill="x", pady=(10, 0))
-
-        self._footer = ctk.CTkLabel(
-            bottom, text="", font=self._font("small"), text_color=MUTED,
-        )
-        self._footer.pack()
+        self._hint.pack(pady=(14, 0))
 
         if self._business:
-            link_row = ctk.CTkFrame(bottom, fg_color=BG, corner_radius=0)
-            link_row.pack(pady=(4, 0))
+            links = ctk.CTkFrame(root, fg_color=C["bg"], corner_radius=0)
+            links.pack(pady=(6, 0))
+            for i, (txt, cmd) in enumerate(
+                (
+                    ("学习声明", self._show_about),
+                    (AUTHOR, self._show_about),
+                    ("GitHub", lambda: webbrowser.open(GITHUB_URL)),
+                )
+            ):
+                if i:
+                    ctk.CTkLabel(links, text="·", font=font(10), text_color=C["line"]).pack(side="left", padx=2)
+                ghost_btn(links, txt, cmd, width=56).pack(side="left")
 
-            ctk.CTkButton(
-                link_row, text="仅供参考学习", width=88, height=24, corner_radius=6,
-                fg_color=BG, hover_color=BORDER, text_color=MUTED,
-                font=self._font("btn_tiny"), command=self._show_about,
-            ).pack(side="left")
-
-            ctk.CTkLabel(link_row, text=f"  ·  {AUTHOR}  ·  ", font=self._font("btn_tiny"), text_color=MUTED).pack(side="left")
-
-            ctk.CTkButton(
-                link_row, text="开源链接", width=72, height=24, corner_radius=6,
-                fg_color=BG, hover_color=GREEN_BG, text_color=GREEN,
-                font=self._font("btn_tiny"), command=lambda: webbrowser.open(GITHUB_URL),
-            ).pack(side="left")
-
-        self._footer_default = f"版本 {__version__}"
-        self._set_footer(self._footer_default)
-
-    def _build_business_card(self, parent) -> None:
-        card = ctk.CTkFrame(
-            parent, fg_color=GOLD_BG, corner_radius=14,
-            border_width=1, border_color=GOLD_BORDER,
+    def _build_biz_strip(self, parent) -> None:
+        strip = ctk.CTkFrame(
+            parent, fg_color=C["amber_soft"], corner_radius=12,
+            border_width=1, border_color=C["amber_line"],
         )
-        card.pack(fill="x", pady=(0, 12))
-
-        top = ctk.CTkFrame(card, fg_color="transparent")
-        top.pack(fill="x", padx=16, pady=(14, 6))
+        strip.pack(fill="x", pady=(14, 0))
 
         ctk.CTkLabel(
-            top, text="商务合作", font=self._font("biz_title"), text_color=GOLD,
-        ).pack(side="left")
+            strip, text="商务合作",
+            font=font(12, "bold"), text_color=C["amber"],
+        ).pack(anchor="w", padx=14, pady=(12, 2))
 
         ctk.CTkLabel(
-            top, text="广告位", font=self._font("btn_tiny"), text_color=GOLD,
-            fg_color=WHITE, corner_radius=6, width=48, height=22,
-        ).pack(side="right")
+            strip,
+            text="接广告 · 有合作意向欢迎联系",
+            font=font(11), text_color=C["text2"], anchor="w",
+        ).pack(anchor="w", padx=14)
 
-        ctk.CTkLabel(
-            card,
-            text="本版本接受广告投放 · 有合作意向欢迎联系",
-            font=self._font("body"),
-            text_color=TEXT,
-            anchor="w",
-        ).pack(fill="x", padx=16, pady=(0, 4))
-
-        ctk.CTkLabel(
-            card,
-            text=f"联系邮箱：{AUTHOR_EMAIL}",
-            font=self._font("small"),
-            text_color=SUB,
-            anchor="w",
-        ).pack(fill="x", padx=16, pady=(0, 10))
-
-        btn_row = ctk.CTkFrame(card, fg_color="transparent")
-        btn_row.pack(fill="x", padx=16, pady=(0, 14))
+        row = ctk.CTkFrame(strip, fg_color="transparent")
+        row.pack(fill="x", padx=14, pady=(8, 12))
 
         ctk.CTkButton(
-            btn_row, text="复制联系方式", height=32, corner_radius=8,
-            fg_color=WHITE, hover_color=GOLD_BORDER, text_color=GOLD,
-            border_width=1, border_color=GOLD_BORDER, font=self._font("btn_small"),
+            row, text="复制邮箱", height=30, corner_radius=8,
+            fg_color=C["bg"], hover_color=C["amber_line"], text_color=C["amber"],
+            border_width=1, border_color=C["amber_line"], font=font(11),
             command=self._copy_contact,
         ).pack(side="left", expand=True, fill="x", padx=(0, 6))
 
         ctk.CTkButton(
-            btn_row, text="GitHub 联系", height=32, corner_radius=8,
-            fg_color=GOLD, hover_color="#B8890F", text_color="white",
-            font=self._font("btn_small"),
+            row, text="联系我", height=30, corner_radius=8,
+            fg_color=C["amber"], hover_color="#B08820", text_color="white",
+            font=font(11),
             command=lambda: webbrowser.open(GITHUB_URL),
         ).pack(side="left", expand=True, fill="x")
 
-    # ── 逻辑 ──
+    def _highlight_chip(self, n: int | None) -> None:
+        self._active_chip = n
+        for num, btn in self._chip_btns.items():
+            if num == n:
+                btn.configure(fg_color=C["green_soft"], text_color=C["green"], border_width=0)
+            else:
+                btn.configure(fg_color=C["bg"], text_color=C["text2"], border_width=0)
+
+    def _pick_chip(self, count: int) -> None:
+        self._set_count(count)
+        self._highlight_chip(count)
 
     def _parse_count(self) -> int | None:
         raw = self._count_var.get().strip()
@@ -361,72 +269,81 @@ class WexOpenApp(ctk.CTk):
         return value
 
     def _on_count_input(self, _event=None) -> None:
-        if self._parse_count() is None and self._count_var.get().strip():
-            self._count_entry.configure(border_color=RED)
+        value = self._parse_count()
+        if value is None and self._count_var.get().strip():
+            self._count_entry.configure(fg_color=C["red_soft"])
+            self._highlight_chip(None)
         else:
-            self._count_entry.configure(border_color=BORDER)
+            self._count_entry.configure(fg_color=C["bg"])
+            if value in self._chip_btns:
+                self._highlight_chip(value)
+            else:
+                self._highlight_chip(None)
 
     def _adjust_count(self, delta: int) -> None:
         current = self._parse_count() or MIN_INSTANCES
-        self._count_var.set(str(max(MIN_INSTANCES, min(MAX_INSTANCES, current + delta))))
-        self._count_entry.configure(border_color=BORDER)
+        n = max(MIN_INSTANCES, min(MAX_INSTANCES, current + delta))
+        self._set_count(n)
+        self._highlight_chip(n if n in self._chip_btns else None)
 
     def _set_count(self, count: int) -> None:
-        self._count_var.set(str(max(MIN_INSTANCES, min(MAX_INSTANCES, count))))
-        self._count_entry.configure(border_color=BORDER)
+        n = max(MIN_INSTANCES, min(MAX_INSTANCES, count))
+        self._count_var.set(str(n))
+        self._count_entry.configure(fg_color=C["bg"])
 
     def _set_count_and_launch(self, count: int) -> None:
         self._set_count(count)
+        self._pick_chip(count)
         self._on_launch()
 
     def _detect_wechat(self) -> None:
-        self._status_dot.configure(text_color=MUTED)
-        self._status_label.configure(text="正在检测微信...")
-        self._path_label.configure(text="扫描本机安装路径...")
-        self._set_footer("检测中...")
+        self._status_dot.configure(text_color=C["text3"])
+        self._status_label.configure(text="检测中")
+        self._path_label.configure(text="")
+        self._hint.configure(text="正在扫描...")
 
         def work() -> None:
-            location = find_wechat()
-            self.after(0, lambda: self._apply_detection(location))
+            loc = find_wechat()
+            self.after(0, lambda: self._apply_detection(loc))
 
         threading.Thread(target=work, daemon=True).start()
 
     def _apply_detection(self, location: WeChatLocation | None) -> None:
         self._location = location
         if location:
-            self._status_dot.configure(text_color=GREEN)
-            self._status_label.configure(text="已找到微信")
-            self._path_label.configure(text=location.display_path, text_color=SUB)
+            self._status_dot.configure(text_color=C["green"])
+            self._status_label.configure(text="微信已就绪")
+            self._path_label.configure(text=_short_path(location.display_path))
             self._launch_btn.configure(state="normal")
-            self._set_footer(f"版本 {__version__}  |  点击启动或快捷多开")
+            self._hint.configure(text=f"v{__version__}  ·  选择数量后启动")
         else:
-            self._status_dot.configure(text_color=RED)
-            self._status_label.configure(text="未检测到微信")
-            self._path_label.configure(text="请先安装 PC 版微信，再点「重新检测」", text_color=SUB)
+            self._status_dot.configure(text_color=C["red"])
+            self._status_label.configure(text="未找到微信")
+            self._path_label.configure(text="请先安装 PC 版微信")
             self._launch_btn.configure(state="disabled")
-            self._set_footer(f"版本 {__version__}  |  支持 Weixin / WeChat")
+            self._hint.configure(text=f"v{__version__}  ·  安装后点刷新")
 
     def _on_launch(self) -> None:
         if self._busy:
             return
         count = self._parse_count()
         if count is None:
-            messagebox.showwarning("数量无效", f"请输入 {MIN_INSTANCES} 到 {MAX_INSTANCES} 之间的整数")
+            messagebox.showwarning("提示", f"请输入 {MIN_INSTANCES}–{MAX_INSTANCES} 的整数")
             return
         if not self._location:
-            messagebox.showerror("未找到微信", "请先安装 PC 版微信，然后点击「重新检测」")
+            messagebox.showerror("提示", "未找到微信，请先安装后点刷新")
             return
 
         self._busy = True
-        self._launch_btn.configure(state="disabled", text="启动中...")
+        self._launch_btn.configure(state="disabled", text="启动中")
         path = self._location.path
 
         def work() -> None:
             try:
-                launched = launch_instances(path, count)
-                self.after(0, lambda: self._launch_done(True, launched))
-            except LaunchError as exc:
-                self.after(0, lambda: self._launch_done(False, str(exc)))
+                n = launch_instances(path, count)
+                self.after(0, lambda: self._launch_done(True, n))
+            except LaunchError as e:
+                self.after(0, lambda: self._launch_done(False, str(e)))
 
         threading.Thread(target=work, daemon=True).start()
 
@@ -434,12 +351,11 @@ class WexOpenApp(ctk.CTk):
         self._busy = False
         self._launch_btn.configure(state="normal", text="启动微信")
         if ok:
-            self._set_footer(f"版本 {__version__}  |  已启动 {detail} 个窗口")
+            self._hint.configure(text=f"已启动 {detail} 个窗口")
         else:
-            messagebox.showerror("启动失败", str(detail))
-            self._set_footer(f"版本 {__version__}  |  启动失败，请重试")
+            messagebox.showerror("失败", str(detail))
+            self._hint.configure(text="启动失败，请重试")
 
 
 def run(*, business: bool = False) -> None:
-    app = WexOpenApp(business=business)
-    app.mainloop()
+    WexOpenApp(business=business).mainloop()

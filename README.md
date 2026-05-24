@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/版本-2.2.1-07C160?style=flat-square" alt="version">
+  <img src="https://img.shields.io/badge/版本-2.3.0-07C160?style=flat-square" alt="version">
   <img src="https://img.shields.io/badge/Platform-Windows-0078D6?style=flat-square&logo=windows&logoColor=white" alt="platform">
   <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white" alt="python">
   <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="license">
@@ -62,7 +62,7 @@
 - **快捷多开** — 双开 / 三开 / 四开 / 五开一键操作
 - **自定义数量** — 支持 1–20 个窗口，想开几个开几个
 - **全版本兼容** — 同时支持新版 `Weixin.exe` 与旧版 `WeChat.exe`
-- **精致界面** — 简约浅色设计，高 DPI 适配
+- **精致界面** — v2.3 极简 UI 重设计，单面板布局、更少边框噪音
 
 ---
 
@@ -146,7 +146,8 @@ WexOpen/
 ├── assets/                    # 图标资源
 ├── installer/WexOpen.iss      # Inno Setup 安装脚本
 ├── wexopen/
-│   ├── app.py                 # 主界面（纯净 / 商业）
+│   ├── theme.py               # 设计系统（颜色 / 字体）
+│   ├── app.py                 # 主界面
 │   ├── about.py               # 关于对话框
 │   ├── meta.py                # 作者与项目信息
 │   ├── finder.py              # 微信路径自动检测
