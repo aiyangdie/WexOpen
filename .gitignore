@@ -5,7 +5,7 @@ __pycache__/
 .eggs/
 dist/
 build/
-*.spec
+*.spec.bak
 
 # 虚拟环境
 .venv/

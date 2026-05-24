@@ -1,0 +1,52 @@
+name: Build Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements-build.txt
+
+      - name: Generate icon
+        run: python scripts/generate_icon.py
+
+      - name: Build with PyInstaller
+        run: pyinstaller WexOpen.spec --noconfirm
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Build installer
+        run: "& 'C:/Program Files (x86)/Inno Setup 6/ISCC.exe' installer/WexOpen.iss"
+
+      - name: Create portable zip
+        shell: pwsh
+        run: |
+          Compress-Archive -Path dist/WexOpen-Portable.exe -DestinationPath dist/WexOpen-Portable.zip -Force
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/WexOpen-Portable.exe
+            dist/WexOpen-Portable.zip
+            dist/installer/WexOpen-Setup.exe
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
