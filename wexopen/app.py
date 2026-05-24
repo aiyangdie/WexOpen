@@ -76,28 +76,30 @@ class WexOpenApp(ctk.CTk):
         if icon.is_file():
             self.iconbitmap(str(icon))
 
-        self._init_fonts()
+        self._register_fonts()
         self._build_ui()
         self._center_window()
         self.after(80, self._detect_wechat)
 
-    def _font(self, key: str, *, size: int, weight: str = "normal") -> ctk.CTkFont:
-        if key not in self._fonts:
+    def _register_fonts(self) -> None:
+        specs: dict[str, tuple[int, str]] = {
+            "logo": (22, "bold"),
+            "title": (20, "bold"),
+            "subtitle": (12, "normal"),
+            "section": (13, "bold"),
+            "body": (12, "normal"),
+            "small": (11, "normal"),
+            "count": (26, "bold"),
+            "btn_main": (15, "bold"),
+            "btn_quick": (13, "normal"),
+            "btn_small": (12, "normal"),
+            "minus": (20, "bold"),
+        }
+        for key, (size, weight) in specs.items():
             self._fonts[key] = ctk.CTkFont(family=FONT, size=size, weight=weight)
-        return self._fonts[key]
 
-    def _init_fonts(self) -> None:
-        self._font("logo", size=22, weight="bold")
-        self._font("title", size=20, weight="bold")
-        self._font("subtitle", size=12)
-        self._font("section", size=13, weight="bold")
-        self._font("body", size=12)
-        self._font("small", size=11)
-        self._font("count", size=26, weight="bold")
-        self._font("btn_main", size=15, weight="bold")
-        self._font("btn_quick", size=13)
-        self._font("btn_small", size=12)
-        self._font("minus", size=20, weight="bold")
+    def _font(self, key: str) -> ctk.CTkFont:
+        return self._fonts[key]
 
     def _center_window(self) -> None:
         self.update_idletasks()
