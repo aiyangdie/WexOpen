@@ -1,58 +1,97 @@
 # WexOpen
 
-> 简约精致的 PC 微信多开助手 · 自动识别 · 免安装 / 安装版任选
-
-![Python](https://img.shields.io/badge/Python-3.10+-07C160?style=flat-square&logo=python&logoColor=white)
-![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?style=flat-square&logo=windows&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
-
 <p align="center">
   <img src="assets/icon.png" alt="WexOpen" width="96">
 </p>
 
-**无需 Python · 无需配置路径 · 下载即用**
+<p align="center">
+  <strong>简约精致的 PC 微信多开助手</strong><br>
+  自动识别安装路径 · 免安装即用 · 纯净版 / 商业版任选
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/版本-2.2.1-07C160?style=flat-square" alt="version">
+  <img src="https://img.shields.io/badge/Platform-Windows-0078D6?style=flat-square&logo=windows&logoColor=white" alt="platform">
+  <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white" alt="python">
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="license">
+</p>
 
 ---
 
-## 下载（两个版本都在 Releases 里）
+## 下载
 
-打开：**https://github.com/aiyangdie/WexOpen/releases/latest**
+前往 **[Releases 发布页](https://github.com/aiyangdie/WexOpen/releases/latest)**，在页面下方 **Assets** 区域按需下载。
 
-在页面下方 **Assets** 区域，按需下载：
+### 纯净版
 
-### 纯净版 — 只有多开功能，界面干净
+适合个人日常使用，**只有多开功能，界面干净无附加内容**。
 
-| 下载文件 | 说明 |
-|----------|------|
-| [WexOpen-Portable.exe](https://github.com/aiyangdie/WexOpen/releases/latest/download/WexOpen-Portable.exe) | 免安装，推荐 |
+| 文件 | 说明 |
+|------|------|
+| [WexOpen-Portable.exe](https://github.com/aiyangdie/WexOpen/releases/latest/download/WexOpen-Portable.exe) | 免安装单文件，**推荐** |
 | [WexOpen-Portable.zip](https://github.com/aiyangdie/WexOpen/releases/latest/download/WexOpen-Portable.zip) | 压缩包 |
-| [WexOpen-Setup.exe](https://github.com/aiyangdie/WexOpen/releases/latest/download/WexOpen-Setup.exe) | 安装版 |
+| [WexOpen-Setup.exe](https://github.com/aiyangdie/WexOpen/releases/latest/download/WexOpen-Setup.exe) | 安装版，自动创建桌面快捷方式 |
 
-### 商业版 — 含广告合作位、关于、作者、开源链接
+### 商业版
 
-| 下载文件 | 说明 |
-|----------|------|
-| [WexOpen-Business-Portable.exe](https://github.com/aiyangdie/WexOpen/releases/latest/download/WexOpen-Business-Portable.exe) | 免安装，推荐 |
+适合商业化场景，**含商务合作广告位、关于页面、作者信息与开源链接**。
+
+| 文件 | 说明 |
+|------|------|
+| [WexOpen-Business-Portable.exe](https://github.com/aiyangdie/WexOpen/releases/latest/download/WexOpen-Business-Portable.exe) | 免安装单文件，**推荐** |
 | [WexOpen-Business-Portable.zip](https://github.com/aiyangdie/WexOpen/releases/latest/download/WexOpen-Business-Portable.zip) | 压缩包 |
 
-> 两个版本都在同一个 Releases 页面，往下拉就能看到全部下载项。
+> 两个版本都在同一个 Releases 页面，无需 Python，下载后双击即可使用。
+
+### 版本对比
+
+| | 纯净版 | 商业版 |
+|---|:---:|:---:|
+| 微信多开 | ✅ | ✅ |
+| 自动检测路径 | ✅ | ✅ |
+| 双开 / 三开 / 四开 / 五开 | ✅ | ✅ |
+| 自定义 1–20 个窗口 | ✅ | ✅ |
+| 商务合作 / 广告位 | — | ✅ |
+| 关于 / 作者 / 开源链接 | — | ✅ |
 
 ---
 
 ## 功能
 
-- **自动检测微信** — 注册表 / 卸载信息 / 运行进程 / 常见目录，零配置
-- **一键多开** — 双开 / 三开 / 四开 / 五开快捷按钮
-- **自定义数量** — 输入 1–20，想开几个开几个
-- **精致界面** — 简约浅色设计，开箱即用
-- **全版本兼容** — 支持 `Weixin.exe` 与 `WeChat.exe`
+- **零配置** — 自动读取注册表、卸载信息、运行进程、常见安装目录，换电脑不用改路径
+- **快捷多开** — 双开 / 三开 / 四开 / 五开一键操作
+- **自定义数量** — 支持 1–20 个窗口，想开几个开几个
+- **全版本兼容** — 同时支持新版 `Weixin.exe` 与旧版 `WeChat.exe`
+- **精致界面** — 简约浅色设计，高 DPI 适配
+
+---
 
 ## 使用说明
 
-1. 下载并运行 `WexOpen-Portable.exe`（或安装 `WexOpen-Setup.exe`）
-2. 程序自动检测本机微信
-3. 选择数量，点击 **「启动微信」**
-4. 未检测到微信？先安装 PC 版微信，再点 **「重新检测」**
+1. 下载对应版本的 `.exe` 文件
+2. 双击运行，程序自动检测本机微信安装位置
+3. 输入数量或点击快捷按钮，再点 **「启动微信」**
+4. 若提示未检测到微信，请先安装 [PC 版微信](https://weixin.qq.com/)，再点 **「重新检测」**
+
+> 建议先完全退出已有微信，再用本工具启动，多开效果更稳定。
+
+---
+
+## 常见问题
+
+**Q：点了启动但只开了一个？**  
+A：请先关闭所有微信窗口，再用本工具重新启动。
+
+**Q：检测不到微信？**  
+A：确认已安装官方 PC 版微信，安装完成后点击「重新检测」。
+
+**Q：杀毒软件报毒？**  
+A：PyInstaller 打包的程序可能被误报，添加信任即可，也可自行编译源码。
+
+**Q：纯净版和商业版有什么区别？**  
+A：功能完全相同。纯净版界面干净；商业版额外展示商务合作广告位与作者 / 开源信息。
+
+---
 
 ## 开发者
 
@@ -62,60 +101,77 @@
 git clone https://github.com/aiyangdie/WexOpen.git
 cd WexOpen
 pip install -r requirements.txt
+
+# 纯净版
 python main.py
+
+# 商业版
+python main_business.py
 ```
 
-### 本地打包 exe
+### 本地打包
 
 ```bash
-# 双击或命令行运行
 build.bat
 ```
 
-输出：
-- `dist/WexOpen-Portable.exe` — 免安装单文件
-- `dist/installer/WexOpen-Setup.exe` — 安装版（需 Inno Setup 6）
+输出文件：
+
+| 路径 | 说明 |
+|------|------|
+| `dist/WexOpen-Portable.exe` | 纯净版免安装 |
+| `dist/WexOpen-Business-Portable.exe` | 商业版免安装 |
+| `dist/installer/WexOpen-Setup.exe` | 纯净版安装包 |
 
 ### 自动发布
 
 推送 `v*` 标签即可触发 GitHub Actions 自动构建并上传到 Releases：
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag v2.2.1
+git push origin v2.2.1
 ```
+
+---
 
 ## 项目结构
 
 ```
 WexOpen/
-├── main.py                  # 入口
-├── WexOpen.spec             # PyInstaller 配置
-├── build.bat                # 一键打包
-├── assets/                  # 图标资源
-├── installer/WexOpen.iss    # Inno Setup 安装脚本
+├── main.py                    # 纯净版入口
+├── main_business.py           # 商业版入口
+├── WexOpen.spec               # PyInstaller 打包配置
+├── build.bat                  # 一键打包脚本
+├── RELEASE_NOTES.md           # 发布说明模板
+├── assets/                    # 图标资源
+├── installer/WexOpen.iss      # Inno Setup 安装脚本
 ├── wexopen/
-│   ├── finder.py            # 微信路径检测
-│   ├── launcher.py          # 多开逻辑
-│   └── app.py               # 图形界面
-└── .github/workflows/       # 自动构建发布
+│   ├── app.py                 # 主界面（纯净 / 商业）
+│   ├── about.py               # 关于对话框
+│   ├── meta.py                # 作者与项目信息
+│   ├── finder.py              # 微信路径自动检测
+│   └── launcher.py            # 多开启动逻辑
+└── .github/workflows/         # CI 自动构建发布
 ```
 
-## 常见问题
+---
 
-**Q: 点了启动但只开了一个？**  
-A: 先完全退出所有微信，再用本工具启动。
+## 免责声明
 
-**Q: 检测不到微信？**  
-A: 确认已安装官方 PC 版微信，安装后点「重新检测」。
+本软件开源免费，**仅供个人学习与研究参考**，请勿用于任何违法用途。
 
-**Q: 杀毒软件报毒？**  
-A: PyInstaller 打包的程序可能被误报，添加信任即可。也可自行 `build.bat` 编译。
-
-## 许可证
-
-MIT License
+---
 
 ## 作者
 
-[aiyangdie](https://github.com/aiyangdie)
+**[aiyangdie](https://github.com/aiyangdie)**
+
+- 邮箱：aike1015@qq.com
+- 开源仓库：https://github.com/aiyangdie/WexOpen
+- 商务合作：请下载商业版或发送邮件联系
+
+---
+
+## 许可证
+
+[MIT License](LICENSE)
