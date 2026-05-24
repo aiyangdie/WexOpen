@@ -102,7 +102,18 @@ jobs:
 
             dist/installer/WexOpen-Setup.exe
 
-          body_path: RELEASE_NOTES.md
+          body: |
+            ## 下载
+
+            **纯净版：** WexOpen-Portable.exe · WexOpen-Portable.zip · WexOpen-Setup.exe
+
+            **商业版：** WexOpen-Business-Portable.exe · WexOpen-Business-Portable.zip
+
+            ---
+
+            [查看全部历史版本](https://github.com/aiyangdie/WexOpen/releases)（页面向下滚动）
+
+            [CHANGELOG 更新日志](https://github.com/aiyangdie/WexOpen/blob/main/CHANGELOG.md)
           generate_release_notes: true
 
         env:
