@@ -166,20 +166,21 @@ class WexOpenApp(ctk.CTk):
         ctk.CTkLabel(title_box, text=f"微信多开助手 · {tag}", font=self._font("subtitle"), text_color=SUB, anchor="w").pack(anchor="w", pady=(2, 0))
         ctk.CTkLabel(title_box, text="自动识别路径，无需配置", font=self._font("small"), text_color=MUTED, anchor="w").pack(anchor="w", pady=(2, 0))
 
-        ctk.CTkButton(
-            header,
-            text="关于",
-            width=52,
-            height=30,
-            corner_radius=8,
-            fg_color=WHITE,
-            hover_color=GREEN_BG,
-            text_color=SUB,
-            border_width=1,
-            border_color=BORDER,
-            font=self._font("btn_tiny"),
-            command=self._show_about,
-        ).pack(side="right", padx=(8, 0))
+        if self._business:
+            ctk.CTkButton(
+                header,
+                text="关于",
+                width=52,
+                height=30,
+                corner_radius=8,
+                fg_color=WHITE,
+                hover_color=GREEN_BG,
+                text_color=SUB,
+                border_width=1,
+                border_color=BORDER,
+                font=self._font("btn_tiny"),
+                command=self._show_about,
+            ).pack(side="right", padx=(8, 0))
 
         # ── 微信状态 ──
         status = self._card(pad)
@@ -275,22 +276,23 @@ class WexOpenApp(ctk.CTk):
         )
         self._footer.pack()
 
-        link_row = ctk.CTkFrame(bottom, fg_color=BG, corner_radius=0)
-        link_row.pack(pady=(4, 0))
+        if self._business:
+            link_row = ctk.CTkFrame(bottom, fg_color=BG, corner_radius=0)
+            link_row.pack(pady=(4, 0))
 
-        ctk.CTkButton(
-            link_row, text="仅供参考学习", width=88, height=24, corner_radius=6,
-            fg_color=BG, hover_color=BORDER, text_color=MUTED,
-            font=self._font("btn_tiny"), command=self._show_about,
-        ).pack(side="left")
+            ctk.CTkButton(
+                link_row, text="仅供参考学习", width=88, height=24, corner_radius=6,
+                fg_color=BG, hover_color=BORDER, text_color=MUTED,
+                font=self._font("btn_tiny"), command=self._show_about,
+            ).pack(side="left")
 
-        ctk.CTkLabel(link_row, text=f"  ·  {AUTHOR}  ·  ", font=self._font("btn_tiny"), text_color=MUTED).pack(side="left")
+            ctk.CTkLabel(link_row, text=f"  ·  {AUTHOR}  ·  ", font=self._font("btn_tiny"), text_color=MUTED).pack(side="left")
 
-        ctk.CTkButton(
-            link_row, text="开源链接", width=72, height=24, corner_radius=6,
-            fg_color=BG, hover_color=GREEN_BG, text_color=GREEN,
-            font=self._font("btn_tiny"), command=lambda: webbrowser.open(GITHUB_URL),
-        ).pack(side="left")
+            ctk.CTkButton(
+                link_row, text="开源链接", width=72, height=24, corner_radius=6,
+                fg_color=BG, hover_color=GREEN_BG, text_color=GREEN,
+                font=self._font("btn_tiny"), command=lambda: webbrowser.open(GITHUB_URL),
+            ).pack(side="left")
 
         self._footer_default = f"版本 {__version__}"
         self._set_footer(self._footer_default)
