@@ -16,7 +16,7 @@
 
 ## 下载（推荐）
 
-前往 **[Releases 发布页](https://github.com/aiyangdie/WexOpen/releases/latest)** 下载：
+前往 **[Releases 发布页](https://github.com/aiyangdie/WexOpen/releases/latest)** 下载 v2.0：
 
 | 版本 | 文件 | 说明 |
 |------|------|------|
