@@ -43,6 +43,25 @@
 
 > 两个版本都在同一个 Releases 页面，无需 Python，下载后双击即可使用。
 
+### 如何查看 / 下载历史版本？
+
+GitHub 的 Releases 页面**默认只展开最新版**，历史版本需要往下翻：
+
+1. 打开 **[全部 Releases](https://github.com/aiyangdie/WexOpen/releases)**（不要只停在 Latest）
+2. 在 **v2.3.0** 下方继续滚动，可看到 **v2.2.1、v2.2.0、v2.0.1…** 等历史条目
+3. 点击某一版本的标题（如 `v2.2.0`）展开，在 **Assets** 里下载该版本的 exe
+
+也可直接查看 **[CHANGELOG 更新日志](CHANGELOG.md)**，每个版本都有说明和下载直链。
+
+| 版本 | 发布页 |
+|------|--------|
+| **v2.3.0**（当前最新） | [下载](https://github.com/aiyangdie/WexOpen/releases/tag/v2.3.0) |
+| v2.2.1 | [下载](https://github.com/aiyangdie/WexOpen/releases/tag/v2.2.1) |
+| v2.2.0 | [下载](https://github.com/aiyangdie/WexOpen/releases/tag/v2.2.0) |
+| v2.0.1 | [下载](https://github.com/aiyangdie/WexOpen/releases/tag/v2.0.1) |
+| v2.0.0 | [下载](https://github.com/aiyangdie/WexOpen/releases/tag/v2.0.0) |
+| v1.0.0 | [下载](https://github.com/aiyangdie/WexOpen/releases/tag/v1.0.0) |
+
 ### 版本对比
 
 | | 纯净版 | 商业版 |
