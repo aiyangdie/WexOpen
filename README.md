@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/covers/05-WexOpen.jpg" alt="WexOpen 项目封面" width="100%"></p>
+
 # WexOpen
 
 <p align="center">
